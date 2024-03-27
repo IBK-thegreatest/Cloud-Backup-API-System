@@ -35,7 +35,7 @@ app.use("/api/v1/files", fileRoutes)
 app.use("/api/v1/history", fileHistoryRoutes)
 app.use("/api/v1/reviews", reviewRoutes)
 app.use((err: HttpException, req: Request, res: Response, next: NextFunction) => {
-    const errorStatus = err.status || 5000
+    const errorStatus = err.status || 500
     const errorMessage = err.message || "Something went wrong!!!"
     return res.status(errorStatus).json({
         success: false,
