@@ -1,7 +1,7 @@
 import HttpException from "../exceptions/Httpexception"
 import { Response, NextFunction } from "express"
 import { RequestWithId } from "interfaces/auth.interface"
-import { createFileService, fileDownloadService } from "../services/fileUpload.services"
+import { createFileService, fileDownloadService, updateSafeFileService } from "../services/fileUpload.services"
 
 export const uploadFile = async (req: RequestWithId, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -30,6 +30,21 @@ export const downloadFile = async (req: RequestWithId, res: Response, next: Next
         const fileId = req.params.fileId
         const filePath = await fileDownloadService(fileId)
         res.status(200).download(filePath)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const updateSafeFile = async (req: RequestWithId, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const fileId = req.params.fileId
+        const fileData = req.body
+        const updateFile = await updateSafeFileService(fileId, fileData)
+        res.status(200).json({
+            success: true,
+            status: "OK",
+            message: "File has been marked as unsafe and automatically deleted"
+        })
     } catch (error) {
         next(error)
     }

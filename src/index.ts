@@ -7,7 +7,6 @@ import mongoose from "mongoose"
 import dotenv from "dotenv"
 import authRoutes from "./routes/auth.routes"
 import userRoutes from "./routes/user.routes"
-import folderRoutes from "./routes/folder.routes"
 import fileRoutes from "./routes/fileUpload.routes"
 import fileHistoryRoutes from "./routes/fileHistory.routes"
 import reviewRoutes from "./routes/review.routes"
@@ -30,7 +29,6 @@ app.use(helmet())
 app.use(cors())
 app.use("/api/v1/auth", authRoutes)
 app.use("/api/v1/users", userRoutes)
-app.use("/api/v1/folders", folderRoutes)
 app.use("/api/v1/files", fileRoutes)
 app.use("/api/v1/history", fileHistoryRoutes)
 app.use("/api/v1/reviews", reviewRoutes)

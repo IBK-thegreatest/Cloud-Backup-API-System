@@ -18,6 +18,7 @@ export const upload = multer({         //Initializing the upload of the file
     limits: { fileSize: 200 * 1024 * 1024 }
 })
 
+//STORING FILE METADATA AFTER UPLOADING
 export const createFileService = async (userId: string, fileMetadata: FileData): Promise<FileData> => {
     const fileData = {
         userId: userId,
@@ -31,9 +32,32 @@ export const createFileService = async (userId: string, fileMetadata: FileData):
     return createNewFile
 }
 
+//DOWNLOADING A FILE
 export const fileDownloadService = async (fileId: string): Promise<string> => {
     const file = await FileModel.findById(fileId)
     if(!file) throw new HttpException(404, "This file does not exist")
 
     return file.filePath
+}
+
+//MARKING A FILE AS UNSAFE AND AUTOMATICALLY DELETING IT
+export const updateSafeFileService = async (fileId: string, fileData: FileData): Promise<FileData> => {
+    const file = await FileModel.findById(fileId)
+    if(!file) throw new HttpException(404, "This file does not exist")
+
+    if(file.isSafe) {
+        if(fileData.isSafe === false) {
+            const updatedFile = await FileModel.findByIdAndUpdate(
+                fileId,
+                { $set: { isSafe: fileData.isSafe } },
+                { new: true }
+            )
+            await FileModel.findByIdAndDelete(fileId)
+            return updatedFile
+        } else {
+            return file
+        }
+    } else {
+        throw new HttpException(401, "You are only allowed to update the safe feature")
+    }
 }
